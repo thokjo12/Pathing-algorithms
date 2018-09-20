@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Graph {
     Node start;
-    Node Goal;
+    Node goal;
 
     ArrayList<Node> nodes;
 }
