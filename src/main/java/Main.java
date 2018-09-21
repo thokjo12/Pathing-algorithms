@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     static ArrayList<String> boards = new ArrayList<String>() {{
+
         add("src/main/boards/board-1-1.txt");
         add("src/main/boards/board-1-2.txt");
         add("src/main/boards/board-1-3.txt");
@@ -23,10 +24,23 @@ public class Main {
         List<Graph> graphs = boards.stream()
                 .map(Main::createGraphFromFile)
                 .collect(Collectors.toList());
-        Graph graph = graphs.get(0);
+        Graph graph = graphs.get(7);
         Astar astar = new Astar(graph.start,graph.goal);
-        HashMap<Node,Node> path = astar.run();
-        path.size();
+        astar.run();
+        List<Node> path = astar.reconstruct();
+        int total_Cost=0;
+        for (Node node:path) {
+            total_Cost += node.cost;
+        }
+        System.out.println(total_Cost);
+        System.out.println(path.size());
+        for (Node node:path) {
+            for (Node inGraph: graph.nodes) {
+                if(node.x == inGraph.x && node.y == inGraph.y){
+                    inGraph.type = "0";
+                }
+            }
+        }
         int total = 0;
         for (int i = 0; i < graph.row; i++){
             for (int y = 0; y < graph.col; y++){
@@ -35,24 +49,6 @@ public class Main {
             }
             System.out.println();
         }
-//        PriorityQueue priorityQueue = new PriorityQueue();
-//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),6.0));
-//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),66.0));
-//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),345.0));
-//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),4.0));
-//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),1.0));
-//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),0.0));
-//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),7.0));
-//
-//        priorityQueue.pop();
-//        priorityQueue.pop();
-//        priorityQueue.pop();
-//        priorityQueue.pop();
-//        priorityQueue.pop();
-//        priorityQueue.pop();
-//        priorityQueue.pop();
-//        System.out.println(priorityQueue.isEmpty());
-
     }
 
     /**

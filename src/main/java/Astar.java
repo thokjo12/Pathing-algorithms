@@ -2,7 +2,6 @@ import java.util.*;
 
 public class Astar {
     PriorityQueue open;
-    List<Node> closed;
     Node start;
     Node goal;
 
@@ -14,7 +13,6 @@ public class Astar {
         this.goal = goal;
         this.start = start;
         open = new PriorityQueue();
-        closed = new ArrayList<>();
         open.add(new Tuple<>(start, 0.0));
     }
 
@@ -25,47 +23,56 @@ public class Astar {
      * @param b
      * @return
      */
-    public double heuristic(Node a, Node b) {
-        return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    public double h(Node a, Node b) {
+        return (Math.abs(a.x - b.x) + Math.abs(a.y - b.y));
     }
+
+    HashMap<Node, Node> parent = new HashMap<>();
+    HashMap<Node, Double> costSoFar = new HashMap<>();
 
     /**
      *
      */
     public HashMap<Node, Node> run() {
         Node current;
-        HashMap<Node, Node> cameFrom = new HashMap<>();
-        HashMap<Node, Double> costSoFar = new HashMap<>();
-        cameFrom.put(start, start);
+        parent.put(start, start);
         costSoFar.put(start, 0.0);
-
         while (!open.isEmpty()) {
             current = open.pop().first;
             if (current == goal) {
                 break;
             }
-            if(!current.type.equals("A")){
-                current.type ="O";
-            }
+            current.type = "D";
+            for (Node next : current.neighbors) {
 
-            if (current.passable) {
+                if (next != null && next.passable) {
+                    double g = costSoFar.get(current) + next.cost;
 
-                for (Node neighbor : current.neighbors) {
-                    if (neighbor != null && neighbor.passable) {
-                        double cost = costSoFar.get(current) + neighbor.cost;
-                        if (!costSoFar.containsKey(neighbor) || cost < costSoFar.get(neighbor)) {
+                    if (!costSoFar.containsKey(next) || g < costSoFar.get(next)) {
+                        costSoFar.put(next, g);
+                        double f = g + h(next, goal);
 
-                            costSoFar.put(neighbor, cost);
-                            double priority = cost + heuristic(neighbor, goal);
-                            open.add(new Tuple<>(neighbor, priority));
-                            cameFrom.put(neighbor, current);
-                        }
+                        open.add(new Tuple<>(next, f));
+
+                        parent.put(next, current);
                     }
                 }
-            } else {
-                closed.add(current);
             }
+
         }
-        return cameFrom;
+        return parent;
+    }
+
+
+    public List<Node> reconstruct() {
+        List<Node> path = new ArrayList<>();
+        Node current = goal;
+        while (current != start) {
+            path.add(current);
+            current = parent.get(current);
+        }
+        System.out.println(parent.size());
+        Collections.reverse(path);
+        return path;
     }
 }

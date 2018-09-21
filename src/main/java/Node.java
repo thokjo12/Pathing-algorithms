@@ -1,8 +1,8 @@
 import java.util.ArrayList;
 
 public class Node{
-    public int cost;
-    public int x,y;
+    public double cost;
+    public double x,y;
     public String type;
     public boolean passable = true;
 
