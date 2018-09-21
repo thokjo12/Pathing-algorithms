@@ -23,24 +23,35 @@ public class Main {
         List<Graph> graphs = boards.stream()
                 .map(Main::createGraphFromFile)
                 .collect(Collectors.toList());
-
-        PriorityQueue priorityQueue = new PriorityQueue();
-        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),6.0));
-        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),66.0));
-        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),345.0));
-        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),4.0));
-        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),1.0));
-        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),0.0));
-        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),7.0));
-
-        priorityQueue.pop();
-        priorityQueue.pop();
-        priorityQueue.pop();
-        priorityQueue.pop();
-        priorityQueue.pop();
-        priorityQueue.pop();
-        priorityQueue.pop();
-        System.out.println(priorityQueue.isEmpty());
+        Graph graph = graphs.get(0);
+        Astar astar = new Astar(graph.start,graph.goal);
+        HashMap<Node,Node> path = astar.run();
+        path.size();
+        int total = 0;
+        for (int i = 0; i < graph.row; i++){
+            for (int y = 0; y < graph.col; y++){
+                System.out.print(graph.nodes.get(total).type);
+                total++;
+            }
+            System.out.println();
+        }
+//        PriorityQueue priorityQueue = new PriorityQueue();
+//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),6.0));
+//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),66.0));
+//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),345.0));
+//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),4.0));
+//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),1.0));
+//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),0.0));
+//        priorityQueue.add(new Tuple<>(new Node(0,"",0,0),7.0));
+//
+//        priorityQueue.pop();
+//        priorityQueue.pop();
+//        priorityQueue.pop();
+//        priorityQueue.pop();
+//        priorityQueue.pop();
+//        priorityQueue.pop();
+//        priorityQueue.pop();
+//        System.out.println(priorityQueue.isEmpty());
 
     }
 
@@ -71,6 +82,8 @@ public class Main {
             e.printStackTrace();
         }
         String[] items = builder.toString().split("");
+        graph.col = cols;
+        graph.row = items.length/cols;
 
         HashMap<Integer, Node> nodeMap = new HashMap<>();
         int total = 0;

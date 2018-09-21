@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Astar {
     PriorityQueue open;
@@ -34,24 +32,40 @@ public class Astar {
     /**
      *
      */
-    public void run() {
+    public HashMap<Node, Node> run() {
         Node current;
-        HashMap<Node, Node> came_from = new HashMap<>();
+        HashMap<Node, Node> cameFrom = new HashMap<>();
+        HashMap<Node, Double> costSoFar = new HashMap<>();
+        cameFrom.put(start, start);
+        costSoFar.put(start, 0.0);
 
         while (!open.isEmpty()) {
             current = open.pop().first;
-
             if (current == goal) {
                 break;
             }
+            if(!current.type.equals("A")){
+                current.type ="O";
+            }
+
             if (current.passable) {
+
                 for (Node neighbor : current.neighbors) {
-                    break;
+                    if (neighbor != null && neighbor.passable) {
+                        double cost = costSoFar.get(current) + neighbor.cost;
+                        if (!costSoFar.containsKey(neighbor) || cost < costSoFar.get(neighbor)) {
+
+                            costSoFar.put(neighbor, cost);
+                            double priority = cost + heuristic(neighbor, goal);
+                            open.add(new Tuple<>(neighbor, priority));
+                            cameFrom.put(neighbor, current);
+                        }
+                    }
                 }
-            }else{
+            } else {
                 closed.add(current);
             }
         }
+        return cameFrom;
     }
-
 }
