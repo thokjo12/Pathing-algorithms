@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Graph implements Cloneable{
+public class Graph{
     Node start;
     Node goal;
     int row;

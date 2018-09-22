@@ -20,7 +20,7 @@ public class Main {
         add("src/main/boards/board-2-4.txt");
     }};
 
-    public static void main(String[] args) throws CloneNotSupportedException {
+    public static void main(String[] args) {
         List<Graph> graphs = boards.stream()
                 .map(Main::createGraphFromFile)
                 .collect(Collectors.toList());
