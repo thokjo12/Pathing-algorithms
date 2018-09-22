@@ -13,42 +13,42 @@ public class PriorityQueue {
         ts.sort(Comparator.comparingDouble(o -> o.second));
     }
 
-    public void updateEntry(Tuple<Node,Double> tupNode){
-        for (Tuple<Node,Double> tuple: ts) {
-            if(tuple.first.y == tupNode.first.y && tuple.first.x == tupNode.first.x){
-                tuple.second = tupNode.second;
-            }
-        }
-        ts.sort(Comparator.comparingDouble(o -> o.second));
-    }
-
-
-    public Tuple<Node,Double> findEntry(Node node){
-        for (Tuple<Node, Double> tuple: ts){
-            if(tuple.first.y == node.y && tuple.first.x == node.x){
-                ts.remove(tuple);
-                return tuple;
-            }
-        }
-        ts.sort(Comparator.comparingDouble(o -> o.second));
-        return null;
-    }
-    public void remove(Node node){
-        for (Tuple<Node, Double> tuple: ts){
-            if(tuple.first.y == node.y && tuple.first.x == node.x){
-                ts.remove(tuple);
-            }
-        }
-        ts.sort(Comparator.comparingDouble(o -> o.second));
-    }
-    public boolean contains(Node node){
-        for (Tuple<Node, Double> tuple: ts){
-            if(tuple.first.y == node.y && tuple.first.x == node.x){
-                return true;
-            }
-        }
-        return false;
-    }
+//    public void updateEntry(Tuple<Node,Double> tupNode){
+//        for (Tuple<Node,Double> tuple: ts) {
+//            if(tuple.first.y == tupNode.first.y && tuple.first.x == tupNode.first.x){
+//                tuple.second = tupNode.second;
+//            }
+//        }
+//        ts.sort(Comparator.comparingDouble(o -> o.second));
+//    }
+//
+//
+//    public Tuple<Node,Double> findEntry(Node node){
+//        for (Tuple<Node, Double> tuple: ts){
+//            if(tuple.first.y == node.y && tuple.first.x == node.x){
+//                ts.remove(tuple);
+//                return tuple;
+//            }
+//        }
+//        ts.sort(Comparator.comparingDouble(o -> o.second));
+//        return null;
+//    }
+//    public void remove(Node node){
+//        for (Tuple<Node, Double> tuple: ts){
+//            if(tuple.first.y == node.y && tuple.first.x == node.x){
+//                ts.remove(tuple);
+//            }
+//        }
+//        ts.sort(Comparator.comparingDouble(o -> o.second));
+//    }
+//    public boolean contains(Node node){
+//        for (Tuple<Node, Double> tuple: ts){
+//            if(tuple.first.y == node.y && tuple.first.x == node.x){
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public Tuple<Node, Double> pop() {
         Tuple<Node, Double> node = ts.get(0);

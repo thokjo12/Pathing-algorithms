@@ -20,35 +20,66 @@ public class Main {
         add("src/main/boards/board-2-4.txt");
     }};
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CloneNotSupportedException {
         List<Graph> graphs = boards.stream()
                 .map(Main::createGraphFromFile)
                 .collect(Collectors.toList());
+
         Graph graph = graphs.get(7);
-        Astar astar = new Astar(graph.start,graph.goal);
-        astar.run();
-        List<Node> path = astar.reconstruct();
-        int total_Cost=0;
-        for (Node node:path) {
-            total_Cost += node.cost;
+
+        HashMap<Node,Node> result_astar = pathingAlgos.astar(graph.start,graph.goal);
+        HashMap<Node,Node> result_dijkstra = pathingAlgos.dijkstra(graph.start,graph.goal);
+        HashMap<Node,Node> result_breadth = pathingAlgos.breadth_first(graph.start,graph.goal);
+
+        List<Node> path_astar = pathingAlgos.reconstruct(graph.start,graph.goal,result_astar);
+        List<Node> path_dijkstra = pathingAlgos.reconstruct(graph.start,graph.goal,result_dijkstra);
+        List<Node> path_breadth = pathingAlgos.reconstruct(graph.start,graph.goal,result_breadth);
+
+        int total_Cost_astar=0;
+
+        for (Node node:path_astar) {
+            total_Cost_astar += node.cost;
         }
-        System.out.println(total_Cost);
-        System.out.println(path.size());
-        for (Node node:path) {
-            for (Node inGraph: graph.nodes) {
-                if(node.x == inGraph.x && node.y == inGraph.y){
-                    inGraph.type = "0";
-                }
-            }
+
+        System.out.println("total cost of path_astar " + total_Cost_astar);
+        System.out.println("lenght of path path_astar " + path_astar.size());
+        reconstructGraphWithPath(path_astar,graph);
+
+        int total_Cost_dijkstra=0;
+
+        for (Node node:path_dijkstra) {
+            total_Cost_dijkstra += node.cost;
         }
+
+        System.out.println("total cost of path_dijkstra " + total_Cost_dijkstra);
+        System.out.println("lenght of path path_dijkstra " + path_dijkstra.size());
+        reconstructGraphWithPath(path_dijkstra,graph);
+        int total_Cost_breadth=0;
+
+        for (Node node:path_breadth) {
+            total_Cost_breadth += node.cost;
+        }
+
+        System.out.println("total cost of path_breadth " + total_Cost_breadth);
+        System.out.println("lenght of path path_breadth " + path_breadth.size());
+        reconstructGraphWithPath(path_breadth,graph);
+    }
+
+    private static void reconstructGraphWithPath(List<Node> path,Graph graph) {
         int total = 0;
         for (int i = 0; i < graph.row; i++){
             for (int y = 0; y < graph.col; y++){
-                System.out.print(graph.nodes.get(total).type);
+                Node node = graph.nodes.get(total);
+                if(path.contains(node) && !node.type.equals("B")){
+                    System.out.print("O");
+                }else{
+                    System.out.print(graph.nodes.get(total).type);
+                }
                 total++;
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     /**
@@ -93,7 +124,6 @@ public class Main {
         for (int i = 1; i - 1 < nodeMap.size(); i++) {
             int index = i - 1;
             Node curNode = nodeMap.get(index);
-
             if (curNode.type.equals("A")) {
                 graph.start = curNode;
             } else if (curNode.type.equals("B")) {
