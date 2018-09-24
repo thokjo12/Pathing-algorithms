@@ -15,7 +15,7 @@ public class pathingAlgos {
     /**
      *
      */
-    public static HashMap<Node, Node> astar(Node start,Node goal) {
+    public static HashMap<Node, Node> astar(Node start, Node goal) {
         HashMap<Node, Node> parent = new HashMap<>();
         HashMap<Node, Double> costSoFar = new HashMap<>();
         PriorityQueue open = new PriorityQueue();
@@ -35,15 +35,12 @@ public class pathingAlgos {
 
                     if (!costSoFar.containsKey(next) || g < costSoFar.get(next)) {
                         costSoFar.put(next, g);
-                        double f = g +  heuristic(next, goal);
-
+                        double f = g + heuristic(next, goal);
                         open.add(new Tuple<>(next, f));
-
                         parent.put(next, current);
                     }
                 }
             }
-
         }
         return parent;
     }
@@ -89,19 +86,19 @@ public class pathingAlgos {
 
         Node current;
         queue.add(start);
-        parent.put(start,start);
+        parent.put(start, start);
 
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             current = queue.poll();
 
-            if(current == goal){
+            if (current == goal) {
                 break;
             }
-            for (Node next: current.neighbors) {
-                if(next != null && next.passable){
-                    if(!parent.containsKey(next)){
+            for (Node next : current.neighbors) {
+                if (next != null && next.passable) {
+                    if (!parent.containsKey(next)) {
                         queue.add(next);
-                        parent.put(next,current);
+                        parent.put(next, current);
                     }
                 }
             }
@@ -110,7 +107,7 @@ public class pathingAlgos {
     }
 
 
-    public static List<Node> reconstruct(Node start,Node goal,HashMap<Node,Node> parent) {
+    public static List<Node> reconstruct(Node start, Node goal, HashMap<Node, Node> parent) {
         List<Node> path = new ArrayList<>();
         Node current = goal;
         while (current != start) {
