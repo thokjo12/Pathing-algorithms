@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 
+/**
+ * a node representing a xy coordinate in the board.
+ * stores cost, its coordinates, the type and if its passable(if its a wall)
+ */
 public class Node{
     public double cost;
     public double x,y;
