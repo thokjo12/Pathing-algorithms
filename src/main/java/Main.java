@@ -7,9 +7,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Main {
-    static ArrayList<String> boards = new ArrayList<String>() {{
+enum brds {
+    board_1_1,
+    board_1_2,
+    board_1_3,
+    board_1_4,
+    board_2_1,
+    board_2_2,
+    board_2_3,
+    board_2_4,
+}
 
+
+
+public class Main {
+
+    static ArrayList<String> boards = new ArrayList<String>() {{
         add("src/main/boards/board-1-1.txt");
         add("src/main/boards/board-1-2.txt");
         add("src/main/boards/board-1-3.txt");
@@ -25,54 +38,68 @@ public class Main {
                 .map(Main::createGraphFromFile)
                 .collect(Collectors.toList());
 
-        Graph graph = graphs.get(7);
+        Graph graph = graphs.get(brds.board_2_2.ordinal());
 
-        HashMap<Node,Node> result_astar = pathingAlgos.astar(graph.start,graph.goal);
-        HashMap<Node,Node> result_dijkstra = pathingAlgos.dijkstra(graph.start,graph.goal);
-        HashMap<Node,Node> result_breadth = pathingAlgos.breadth_first(graph.start,graph.goal);
+        //run the different algorithms
+        HashMap<Node, Node> result_astar = pathingAlgos.astar(graph.start, graph.goal);
+        HashMap<Node, Node> result_dijkstra = pathingAlgos.dijkstra(graph.start, graph.goal);
+        HashMap<Node, Node> result_breadth = pathingAlgos.breadth_first(graph.start, graph.goal);
 
-        List<Node> path_astar = pathingAlgos.reconstruct(graph.start,graph.goal,result_astar);
-        List<Node> path_dijkstra = pathingAlgos.reconstruct(graph.start,graph.goal,result_dijkstra);
-        List<Node> path_breadth = pathingAlgos.reconstruct(graph.start,graph.goal,result_breadth);
+        //reconstruct the paths for the different algorithms
+        List<Node> path_astar = pathingAlgos.reconstruct(graph.start, graph.goal, result_astar);
+        List<Node> path_dijkstra = pathingAlgos.reconstruct(graph.start, graph.goal, result_dijkstra);
+        List<Node> path_breadth = pathingAlgos.reconstruct(graph.start, graph.goal, result_breadth);
 
-        int total_Cost_astar=0;
+        int total_Cost_astar = 0;
 
-        for (Node node:path_astar) {
+        //calculate cost for a star
+        for (Node node : path_astar) {
             total_Cost_astar += node.cost;
         }
 
+        //print graph and additional information
         System.out.println("total cost of path_astar " + total_Cost_astar);
         System.out.println("lenght of path path_astar " + path_astar.size());
-        reconstructGraphWithPath(path_astar,graph);
+        reconstructGraphWithPath(path_astar, graph);
 
-        int total_Cost_dijkstra=0;
 
-        for (Node node:path_dijkstra) {
+        int total_Cost_dijkstra = 0;
+        //calculate cost for dijkstra
+        for (Node node : path_dijkstra) {
             total_Cost_dijkstra += node.cost;
         }
 
+        //print graph and additional information
         System.out.println("total cost of path_dijkstra " + total_Cost_dijkstra);
         System.out.println("lenght of path path_dijkstra " + path_dijkstra.size());
-        reconstructGraphWithPath(path_dijkstra,graph);
-        int total_Cost_breadth=0;
+        reconstructGraphWithPath(path_dijkstra, graph);
 
-        for (Node node:path_breadth) {
+        int total_Cost_breadth = 0;
+        //calculate cost for breadth
+        for (Node node : path_breadth) {
             total_Cost_breadth += node.cost;
         }
 
+        //print graph and additional information
         System.out.println("total cost of path_breadth " + total_Cost_breadth);
         System.out.println("lenght of path path_breadth " + path_breadth.size());
-        reconstructGraphWithPath(path_breadth,graph);
+        reconstructGraphWithPath(path_breadth, graph);
     }
 
-    private static void reconstructGraphWithPath(List<Node> path,Graph graph) {
+    /**
+     * visually represent the  graph with a path.
+     *
+     * @param path  the path to add to the visualization
+     * @param graph the graph to visualize
+     */
+    private static void reconstructGraphWithPath(List<Node> path, Graph graph) {
         int total = 0;
-        for (int i = 0; i < graph.row; i++){
-            for (int y = 0; y < graph.col; y++){
+        for (int i = 0; i < graph.row; i++) {
+            for (int y = 0; y < graph.col; y++) {
                 Node node = graph.nodes.get(total);
-                if(path.contains(node) && !node.type.equals("B")){
+                if (path.contains(node) && !node.type.equals("B")) {
                     System.out.print("O");
-                }else{
+                } else {
                     System.out.print(graph.nodes.get(total).type);
                 }
                 total++;
@@ -110,7 +137,7 @@ public class Main {
         }
         String[] items = builder.toString().split("");
         graph.col = cols;
-        graph.row = items.length/cols;
+        graph.row = items.length / cols;
 
         HashMap<Integer, Node> nodeMap = new HashMap<>();
         int total = 0;
@@ -152,6 +179,12 @@ public class Main {
         return graph;
     }
 
+    /**
+     * used to create nodes with cost based on the grid item type.
+     *
+     * @param item the char at some position in the grid
+     * @return the cost of this type.
+     */
     private static int getCost(String item) {
         switch (item) {
             case "w":

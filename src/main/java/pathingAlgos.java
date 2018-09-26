@@ -7,11 +7,13 @@ import java.util.*;
  * <p>
  * one thing i would like to implement here is a tiebreaker to resolve the issues with the priority queue filling up
  * with nodes that has the same priority.
- * Tie breaker would be some number that is dependent on the graph which be multiplied by the heuristic this could
- * effectively reduce the nodes searched. The current issue is that when the priority queue is filled up with entries of
- * equal prioriy, it aStar can become dijkstra until the nodes with equal priority are reduced to 1.
+ * Tie breaker would be some number that is dependent on the graph which be multiplied by the heuristic, this could
+ * effectively reduce the nodes searched(but also increase if the tiebreaker is too small or too large).
+ * The current issue is that when the priority queue is filled up with entries of
+ * equal priority, aStar can become dijkstra until the nodes with equal priority are reduced to 1.
  */
 public class pathingAlgos {
+
     /**
      * manhattan distance, works great for grids that only allow left right top or bottom movement.
      *
@@ -37,7 +39,7 @@ public class pathingAlgos {
      * for current, iterate over its neighbors,
      * check if the neighbor is not null and is passable ( that its not a wall)
      * calculate the new cost of moving here with the costSoFar and the cost of the neighbor
-     * checks if parent contains the neighbor, if it does not, check of the neighbor is not in costsofar or that
+     * check of the neighbor is not in costsofar or that
      * the new costs is less than the costSoFar of the node
      * if any of these matches push the node to costSoFar with the updated cost
      * calculate our priority (F(n) = g(n) + h(n,goal))
@@ -79,6 +81,9 @@ public class pathingAlgos {
     }
 
     /**
+     * effectively the same as the asstar implementation in this file,
+     * only difference is that the heuristic is not used to calculate a priority, as the queue here uses the costSoFar and
+     * the cost of the node for that.
      * @param start The start node we want to path from
      * @param goal  The goal node we want to path to
      * @return a hashmap containing nodes, each node points to their parent in relation to the search.
@@ -119,6 +124,15 @@ public class pathingAlgos {
     }
 
     /**
+     * Uses a simple FIFO stack as a queue
+     * has a hashmap named parent (node, node) to reference parent of some node.
+     * pushes start to the stack,
+     * while the stack is not empty,
+     * check if node is goal, if so stop the search.
+     * poll nodes from the stack, check the neighbors, if parents does not contain the neighbor, push it to the queue and
+     * parent.
+     *
+     * uses no heuristic and no cost to guide the search, searches everything untill goal is found.
      * @param start The start node we want to path from
      * @param goal  The goal node we want to path to
      * @return a hashmap containing nodes, each node points to their parent in relation to the search.
@@ -149,7 +163,16 @@ public class pathingAlgos {
         return parent;
     }
 
-
+    /**
+     *Reconstructs the path based on the parents from goal to start,
+     * starts with the goal node as current, checks the parents hashmap for current's parent, appends this to a list
+     * keeps going til current is the start node.
+     * reverses the path to start at the start node instead of goal.
+     * @param start The start node
+     * @param goal the target node
+     * @param parent hashmap containing node to node reference.
+     * @return a list, as the path traversed by the algorithm that constructed the parent hashmap .
+     */
     public static List<Node> reconstruct(Node start, Node goal, HashMap<Node, Node> parent) {
         List<Node> path = new ArrayList<>();
         Node current = goal;
