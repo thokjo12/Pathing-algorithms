@@ -1,7 +1,6 @@
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,6 @@ enum brds {
 }
 
 
-
 public class Main {
 
     static ArrayList<String> boards = new ArrayList<String>() {{
@@ -33,12 +31,12 @@ public class Main {
         add("src/main/boards/board-2-4.txt");
     }};
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         List<Graph> graphs = boards.stream()
                 .map(Main::createGraphFromFile)
                 .collect(Collectors.toList());
 
-        Graph graph = graphs.get(brds.board_2_2.ordinal());
+        Graph graph = graphs.get(brds.board_2_4.ordinal());
 
         //run the different algorithms
         HashMap<Node, Node> result_astar = pathingAlgos.astar(graph.start, graph.goal);
@@ -84,6 +82,55 @@ public class Main {
         System.out.println("total cost of path_breadth " + total_Cost_breadth);
         System.out.println("lenght of path path_breadth " + path_breadth.size());
         reconstructGraphWithPath(path_breadth, graph);
+
+        //change path var to
+        writeToFile(graph,path_astar,"astar");
+        writeToFile(graph,path_dijkstra,"dijkstra");
+        writeToFile(graph,path_breadth,"breadth_first_search");
+        Process process1 = Runtime.getRuntime().exec("python src/main/python/test.py astar " +total_Cost_astar);
+        Process process2 = Runtime.getRuntime().exec("python src/main/python/test.py dijkstra "+total_Cost_dijkstra);
+        Process process3 = Runtime.getRuntime().exec("python src/main/python/test.py breadth "+total_Cost_breadth);
+
+    }
+
+    /**
+     * writes to a file that contains the board representation
+     * row and col
+     * and path representation in xy coordinates.
+     * @param graph graph
+     * @param path path
+     * @param name filename
+     */
+    private static void writeToFile(Graph graph, List<Node> path,String name){
+        File file = new File("src/main/python/"+name);
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.append(String.format("%s,%s\n",graph.col,graph.row));
+            writer.append("gs\n");
+            int total = 0;
+            StringBuilder rowline = new StringBuilder();
+            for (int i = 0; i < graph.row; i++) {
+                for (int y = 0; y < graph.col; y++) {
+                    rowline.append(graph.nodes.get(total).type);
+                    total++;
+                }
+                rowline.append("\n");
+            }
+            writer.append(rowline.toString());
+            System.out.println();
+            writer.append("ge\n");
+            writer.append("ps\n");
+            String pathstr = "";
+            for (int i = 0; i<path.size(); i++){
+                Node node = path.get(i);
+                pathstr += String.format("%s.%s,",(int)node.x,(int)node.y);
+            }
+            writer.append(pathstr+"\n");
+            writer.append("pe");
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
