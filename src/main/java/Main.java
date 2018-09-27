@@ -87,9 +87,9 @@ public class Main {
         writeToFile(graph,path_astar,"astar");
         writeToFile(graph,path_dijkstra,"dijkstra");
         writeToFile(graph,path_breadth,"breadth_first_search");
-        Process process1 = Runtime.getRuntime().exec("python src/main/python/test.py astar " +total_Cost_astar);
-        Process process2 = Runtime.getRuntime().exec("python src/main/python/test.py dijkstra "+total_Cost_dijkstra);
-        Process process3 = Runtime.getRuntime().exec("python src/main/python/test.py breadth "+total_Cost_breadth);
+        Process process1 = Runtime.getRuntime().exec("python src/main/python/createplot.py astar " +total_Cost_astar);
+        Process process2 = Runtime.getRuntime().exec("python src/main/python/createplot.py dijkstra "+total_Cost_dijkstra);
+        Process process3 = Runtime.getRuntime().exec("python src/main/python/createplot.py breadth "+total_Cost_breadth);
 
     }
 
