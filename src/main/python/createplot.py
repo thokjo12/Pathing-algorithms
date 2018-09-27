@@ -7,10 +7,12 @@ row = 0
 readingGrid = False
 readingPath = False
 total = 0
+
 name=sys.argv[1]
 cost = sys.argv[2]
-with open("src/main/python/"+name) as source:
 
+# read our files and start constructing the relevant data we need.
+with open("src/main/python/"+name) as source:
     line = source.readline()
     col = int(line.split(',')[0])
     row = int(line.split(',')[1])
@@ -43,6 +45,7 @@ with open("src/main/python/"+name) as source:
 colors = np.zeros((row, col, 3))
 fig, ax = plt.subplots()
 
+# color our grid and put text for goal and start
 for y in range(len(grid)):
     for x in range(len(grid[y])):
         if grid[y][x] == b'w':
